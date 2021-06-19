@@ -11,6 +11,7 @@
     <div class="header">
       <h1>JEOPARDY</h1>
       <i class='fab fa-js'></i>
+      <h5>Timer:<span class='timer'></span></h5>
       <label class="switch">
         <input type="checkbox">
         <span class="slider round"></span>
@@ -19,11 +20,17 @@
   
     </div>
     <div class="info-row">
-        Remaining:<span class='questions-left'></span>
-        Answered:<span class='questions-answered'></span>
-        Correct:<span class='correct'></span>
-        Wrong:<span class='wrong'></span>
-        PlayerScore:<span class='score'></span>
+       <h5> Remaining:<span class='questions-left'></span></h5>
+       <h5> Answered:<span class='questions-answered'></span></h5>
+       
+       <div class=text-center>
+           <div class='flex my-2'>
+                <h5>Correct:<span class='correct'></span></h5>
+                <h5> Wrong:<span class='wrong'></span></h5>
+           </div>
+           <h5> PlayerScore:<span class='score'></span></h5>
+            
+       </div>
     </div>
     <div class="game-area">
         <div class="gameboard"></div>

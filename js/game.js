@@ -15,10 +15,13 @@ var wrong = 0;
 var score = 0;
 var gameIsHard = false;
 
+var timerInt
+
+
 
 toggleSwitch.oninput=()=>{
     gameIsHard = !gameIsHard
-    difficultyDOM.innerHTML = gameIsHard ? "<span style='color:red'>Hard</span>" : "<span style='color:green'>Easy</span>"
+    difficultyDOM.innerHTML = gameIsHard ? "<span style='color:red'>Hard</span>" : "<span style='color:white'>Easy</span>"
 }
 
 
@@ -96,6 +99,7 @@ function displayQuestion(e,data){
     }
     var eRef = e.target
 
+
     if(gameIsHard){
     createInputGameCard(data[x].data[y].question,data[x].data[y].answer,eRef,pointsForQuestion)
     }
@@ -109,23 +113,25 @@ function displayQuestion(e,data){
  function createRadioSelectGameCard(question,answer,eRef,pointsForQuestion){
     var gameCard = document.createElement("div");
     gameCard.className='question-card radio-card'
-    var html = ""
+    var html = "<div class='text-center'>Timer:<span class='timer'></span>"
     html = `<h3 class='h3-question'>${question}</h3>`
 
     let ourWords = randomArr()
         ourWords.push(answer);
         ourWords = ourWords.sort(()=>Math.random() - .5);
-        html += '<div class="flex">'
+        html += '<div style="display:grid;grid-template-columns:repeat(2,1fr)">'
     ourWords.forEach((w,idx)=>{
-        if(idx ===2) html += "<br>"
+        // if(idx ===2) html += "<br>"
         html += `<label>${w}</label><input type='radio' name='question' value=${w}>`
     })
 
-    html += `</div><button class='radio-answer-btn'>Answer</button>`
+    html += `<button class='radio-answer-btn'>Answer</button></div>`
 
     gameCard.innerHTML = html;
 
     gameArea.appendChild(gameCard)
+    startTimer(answer,eRef,pointsForQuestion)
+  
 
 
     document.querySelector(".radio-answer-btn").onclick=()=>checkRadioAnswer(answer,eRef,pointsForQuestion)
@@ -135,9 +141,10 @@ function displayQuestion(e,data){
 
 
 
-function checkRadioAnswer(answer,eRef,pointsForQuestions){
+function checkRadioAnswer(answer,eRef,pointsForQuestion){
 
     let playerAnswer = document.querySelector("input[type='radio']:checked").value
+    checkAnswer(answer,playerAnswer,pointsForQuestion,eRef)
 }
 
 
@@ -169,16 +176,18 @@ function checkRadioAnswer(answer,eRef,pointsForQuestions){
 
 
 
-
 function createInputGameCard(question,answer,eRef,pointsForQuestion){
     var gameCard = document.createElement("div");
     gameCard.className='question-card'
-    gameCard.innerHTML = `<h3 class='h3-question'>${question}</h3><h4 class='answerh4' style='opacity:0'>Answer: <span class='text-red ml-5'>${answer}</span></h4><h4 class='players-answer'></h4><div class='answer-div'><label for="answer">Answer:</label><input type='text' name='answer' id='answer' placeholder='your answer...'><button class='answer-btn'>Enter</div>`
+
+    gameCard.innerHTML = `<div class='text-center'>Timer:<span class='timer'></span><h3 class='h3-question'>${question}</h3><h4 class='answerh4' style='opacity:0'>Answer: <span class='text-red ml-5'>${answer}</span></h4><h4 class='players-answer'></h4><div class='answer-div'><label for="answer">Answer:</label><input type='text' name='answer' id='answer' placeholder='your answer...'><button class='answer-btn'>Enter</div></div>`
 
    gameArea.appendChild(gameCard)
+   startTimer(answer,eRef,pointsForQuestion)
 
 
    document.querySelector(".answer-btn").onclick=(e)=>compareAnswer(e,pointsForQuestion,eRef)
+
 }
 
 
@@ -206,8 +215,20 @@ var playerAnswer= document.querySelector("input[name='answer']").value;
 
 
 function checkAnswer(answer,playerAnswer,points,eRef){
+    clearInterval(timerInt)
+    document.querySelector(".timer").innerHTML = ""
+    gameArea.removeChild(document.querySelector('.question-card'))
+
     let verdict = ''
     console.log(eRef)
+    if(playerAnswer === ""){
+        verdict = false;
+        toggleRow(verdict)
+        console.log(":(")
+        eRef.style.backgroundColor='red'
+        eRef.innerHTML = "<i class='fas fa-times'></i>"
+        return;
+    }
     playerAnswer.split(" ").forEach(w=>{
         if(answer.indexOf(w) !== -1){
             console.log("player got it right!!!")
@@ -242,3 +263,27 @@ function toggleRow(verdict){
     correctDOM.innerHTML = correct;
     wrongDOM.innerHTML = wrong;
 }
+
+
+
+
+function startTimer(answer,points,eRef){
+    let counter = 15
+
+    timerInt = setInterval(()=>{
+        counter--
+
+        document.querySelector(".timer").innerHTML = counter;
+
+        if(counter === -1){
+         checkAnswer(answer,"",eRef,points)
+        gameArea.removeChild(document.querySelector('.question-card'))
+        document.querySelector(".timer").innerHTML = ""
+        clearInterval(timerInt)
+        }
+
+    },1000)
+
+    
+}
+

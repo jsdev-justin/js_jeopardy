@@ -1,11 +1,25 @@
 
+async function getIds(){
+
+var categoryIds = [];
+
+let json = await fetch(`https://jservice.io/api/categories?count=50`)
+let data = await json.json()
+    categoryIds = data.map(({id})=>({id}))
+    // console.log(categoryIds)
+    return categoryIds;
+}
 
  function getAllData(){
-    return new Promise((resolve)=>{
+    return new Promise(async(resolve)=>{
     let ourData=[];
     let isFinished = false;
+    let ourCategoryIds = await getIds()
+
+    console.log(ourCategoryIds)
+
     for(let i=1;i<=6;i++){
-        fetch(`https://jservice.io/api/clues?category=${i}`)
+        fetch(`https://jservice.io/api/clues?category=${ourCategoryIds[Math.random() * ourCategoryIds.length | 0].id}`)
         .then(data=>data.json())
         .then(data=>{
             data = data.slice(0,8)
