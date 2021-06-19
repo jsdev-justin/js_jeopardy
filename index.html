@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+    <title>Jeopardy</title>
+</head>
+<body>
+    <div class="header">
+      <h1>JEOPARDY</h1>
+      <i class='fab fa-js'></i>
+      <label class="switch">
+        <input type="checkbox">
+        <span class="slider round"></span>
+      </label>
+      <span class='difficulty'>Easy</span>
+  
+    </div>
+    <div class="info-row">
+        Remaining:<span class='questions-left'></span>
+        Answered:<span class='questions-answered'></span>
+        Correct:<span class='correct'></span>
+        Wrong:<span class='wrong'></span>
+        PlayerScore:<span class='score'></span>
+    </div>
+    <div class="game-area">
+        <div class="gameboard"></div>
+    </div>
+    
+
+
+    <script src="js/apidata.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
