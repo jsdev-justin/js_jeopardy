@@ -207,11 +207,11 @@ input{
   }
   
   input:checked + .slider {
-    background-color: lightgray)
+    background-color: lightgray;
   }
   
   input:focus + .slider {
-    box-shadow: lightgray)
+    box-shadow: lightgray;
   }
   
   input:checked + .slider:before {

@@ -95,6 +95,7 @@ function displayQuestion(e,data){
     console.log(x,y)
     
     if(gameArea.children.length > 1){
+        clearInterval(timerInt)
         gameArea.removeChild(document.querySelector('.question-card'))
     }
     var eRef = e.target
@@ -113,8 +114,8 @@ function displayQuestion(e,data){
  function createRadioSelectGameCard(question,answer,eRef,pointsForQuestion){
     var gameCard = document.createElement("div");
     gameCard.className='question-card radio-card'
-    var html = "<div class='text-center'>Timer:<span class='timer'></span>"
-    html = `<h3 class='h3-question'>${question}</h3>`
+    var html = "<div class='text-center'>Timer:<span class='timer ml-5'></span>"
+        html += `<h3 class='h3-question'>${question}</h3>`
 
     let ourWords = randomArr()
         ourWords.push(answer);
@@ -122,7 +123,7 @@ function displayQuestion(e,data){
         html += '<div style="display:grid;grid-template-columns:repeat(2,1fr)">'
     ourWords.forEach((w,idx)=>{
         // if(idx ===2) html += "<br>"
-        html += `<label>${w}</label><input type='radio' name='question' value=${w}>`
+        html += `<label>${w[0].toUpperCase() + w.split("").slice(1,w.length).join("")}</label><input type='radio' name='question' value=${w}>`
     })
 
     html += `<button class='radio-answer-btn'>Answer</button></div>`
@@ -142,6 +143,8 @@ function displayQuestion(e,data){
 
 
 function checkRadioAnswer(answer,eRef,pointsForQuestion){
+    if(!document.querySelector("input[type='radio']:checked"))return alert("Need to check a box you dummy!")
+    clearInterval(timerInt)
 
     let playerAnswer = document.querySelector("input[type='radio']:checked").value
     checkAnswer(answer,playerAnswer,pointsForQuestion,eRef)
@@ -180,7 +183,7 @@ function createInputGameCard(question,answer,eRef,pointsForQuestion){
     var gameCard = document.createElement("div");
     gameCard.className='question-card'
 
-    gameCard.innerHTML = `<div class='text-center'>Timer:<span class='timer'></span><h3 class='h3-question'>${question}</h3><h4 class='answerh4' style='opacity:0'>Answer: <span class='text-red ml-5'>${answer}</span></h4><h4 class='players-answer'></h4><div class='answer-div'><label for="answer">Answer:</label><input type='text' name='answer' id='answer' placeholder='your answer...'><button class='answer-btn'>Enter</div></div>`
+    gameCard.innerHTML = `<div class='text-center'>Timer:<span class='timer ml-5'></span><h3 class='h3-question'>${question}</h3><h4 class='answerh4' style='opacity:0'>Answer: <span class='text-red ml-5'>${answer}</span></h4><h4 class='players-answer'></h4><div class='answer-div'><label for="answer">Answer:</label><input type='text' name='answer' id='answer' placeholder='your answer...'><button class='answer-btn'>Enter</div></div>`
 
    gameArea.appendChild(gameCard)
    startTimer(answer,eRef,pointsForQuestion)
@@ -192,6 +195,8 @@ function createInputGameCard(question,answer,eRef,pointsForQuestion){
 
 
 function compareAnswer(e,points,eRef){
+    clearInterval(timerInt)
+
     document.querySelector(".answerh4").style.opacity = 1;
 var answer = document.querySelector(".answerh4").textContent.split(":")[1];
 var playerAnswer= document.querySelector("input[name='answer']").value;
@@ -206,16 +211,15 @@ var playerAnswer= document.querySelector("input[name='answer']").value;
     checkAnswer(answer,playerAnswer,points,eRef)
 
 
-    setTimeout(()=>{
-        gameArea.removeChild(document.querySelector('.question-card'))
+    // setTimeout(()=>{
+    //     gameArea.removeChild(document.querySelector('.question-card'))
 
-    },1250)
+    // },1250)
 }
 
 
 
 function checkAnswer(answer,playerAnswer,points,eRef){
-    clearInterval(timerInt)
     document.querySelector(".timer").innerHTML = ""
     gameArea.removeChild(document.querySelector('.question-card'))
 
@@ -262,7 +266,32 @@ function toggleRow(verdict){
     questionsAnsweredDOM.innerHTML = questionsAnswered;
     correctDOM.innerHTML = correct;
     wrongDOM.innerHTML = wrong;
+
+    if(questionsLeft === 0){
+        gameOver()
+    }
 }
+
+
+function gameOver(){
+    var gameCard = document.createElement("div");
+    gameCard.className='question-card'
+    fetch(`https://api.giphy.com/v1/gifs/search?q=thats%20all%20folks&api_key=nTv0EGtd08JY2KbjlEnIZwVsFolXRS2C`)
+    .then(res=>res.json())
+    .then(res=>{
+    console.log(res)
+
+ 
+
+    gameCard.innerHTML =`<h1>Game Over!</h1><h4>Your Score:${score}</h4><img src=${res.data[Math.random() * res.data.length | 0].images.fixed_height.url} style='height:100px'>`
+
+    gameArea.appendChild(gameCard)
+    })
+}
+
+
+
+
 
 
 
@@ -274,12 +303,14 @@ function startTimer(answer,points,eRef){
         counter--
 
         document.querySelector(".timer").innerHTML = counter;
+        if(counter < 5){
+            document.querySelector(".timer").classList.add('text-red')
+        }
 
         if(counter === -1){
-         checkAnswer(answer,"",eRef,points)
-        gameArea.removeChild(document.querySelector('.question-card'))
-        document.querySelector(".timer").innerHTML = ""
-        clearInterval(timerInt)
+        document.querySelector(".timer").classList.remove('text-red')
+               checkAnswer(answer,"",eRef,points)
+              clearInterval(timerInt)
         }
 
     },1000)
