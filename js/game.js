@@ -297,7 +297,7 @@ function gameOver(){
 
 
 function startTimer(answer,points,eRef){
-    let counter = 15
+    let counter = 25
 
     timerInt = setInterval(()=>{
         counter--
