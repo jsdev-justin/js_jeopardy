@@ -132,6 +132,7 @@ border:1px solid black;
     transform:translateY(-100px);
     animation:growcard 2s forwards;
     padding:.25em;
+    overflow:auto;
 
 }
 
